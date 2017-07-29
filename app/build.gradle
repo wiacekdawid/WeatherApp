@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -29,6 +31,9 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
     compile "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
     compile "com.android.support:multidex:$rootProject.ext.multidexVersion"
+    compile "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+
+    kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.ext.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.ext.leakcanaryVersion"
