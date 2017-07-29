@@ -22,6 +22,7 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+    compile "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
 
     testCompile "junit:junit:$rootProject.ext.junitVersion"
 
