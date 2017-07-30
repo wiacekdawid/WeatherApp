@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.wiacek.weatherapp.ui.weather.WeatherViewModel" />
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/current_condition"/>
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currentCondition}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/temperature"/>
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.temperature}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/wind_speed"/>
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.windSpeed}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/wind_direction"/>
+
+            <TextView
+                style="@style/DefaultFontStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.windDirection}"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
 
         <activity android:name=".ui.weather.WeatherActivity"
-            android:label="@string/main_activity_name"
+            android:label="@string/weather_activity_name"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

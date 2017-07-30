@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">WeatherApp</string>
-    <string name="main_activity_name">WeatherApp</string>
+    <string name="weather_activity_name">WeatherApp</string>
+
+    <string name="current_condition">Current Condition:</string>
+    <string name="temperature">Temperature:</string>
+    <string name="wind_speed">Wind Speed:</string>
+    <string name="wind_direction">Wind Direction:</string>
 </resources>
