@@ -29,6 +29,7 @@ ext {
     targetSdkVersion = 25
     compileSdkVersion = 25
     buildToolsVersion = '26.0.0'
+    databindingVersion = '2.3.3'
 
     // App dependencies
     supportLibraryVersion = '25.3.1'

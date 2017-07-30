@@ -1,4 +1,4 @@
-package com.wiacek.weatherapp.ui
+package com.wiacek.weatherapp.ui.weather
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -8,7 +8,7 @@ import com.wiacek.weatherapp.R
  * Created by wiacek.dawid@gmail.com
  */
 
-class MainActivity : AppCompatActivity() {
+class WeatherActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
