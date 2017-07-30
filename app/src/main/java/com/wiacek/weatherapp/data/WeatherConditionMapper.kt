@@ -11,6 +11,7 @@ object WeatherConditionMapper {
         return WeatherCondition(weatherDescription = weatherResponseDto.weather[0].main,
                 temperature = weatherResponseDto.main.temperature,
                 windSpeed = weatherResponseDto.wind.speed,
-                windDirection = weatherResponseDto.wind.direction)
+                windDirection = weatherResponseDto.wind.direction,
+                iconUrl = "http://openweathermap.org/img/w/" + weatherResponseDto.weather[0].icon + ".png")
     }
 }

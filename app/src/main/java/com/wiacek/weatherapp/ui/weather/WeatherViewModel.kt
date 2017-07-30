@@ -17,7 +17,8 @@ class WeatherViewModel(var openWeatherMapService: OpenWeatherMapService? = null,
                        currentCondition: String = "",
                        temperature: String = "",
                        windSpeed: String = "",
-                       windDirection: String = "") : BaseObservable() {
+                       windDirection: String = "",
+                       iconUrl: String = "") : BaseObservable() {
 
     @get:Bindable
     var currentCondition = currentCondition
@@ -47,6 +48,13 @@ class WeatherViewModel(var openWeatherMapService: OpenWeatherMapService? = null,
             notifyPropertyChanged(BR.windDirection)
         }
 
+    @get:Bindable
+    var iconUrl = iconUrl
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.iconUrl)
+        }
+
     fun refreshWeatherConditions() {
         openWeatherMapService?.getWeatherConditionByLatLon(49.975253, 19.124248, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
                 ?.subscribeOn(Schedulers.io())
@@ -54,13 +62,16 @@ class WeatherViewModel(var openWeatherMapService: OpenWeatherMapService? = null,
                 ?.map {
                     WeatherConditionMapper.transformWeatherResponseDtoToWeatherCondition(it)
                 }
-                ?.subscribe {
-                    weatherCondition ->
-                    currentCondition = weatherCondition.weatherDescription
-                    temperature = weatherCondition.temperature
-                    windSpeed = weatherCondition.windSpeed
-                    windDirection = weatherCondition.windDirection
-                    Timber.e("Error")
-                }
+                ?.subscribe(
+                        {
+                            weatherCondition ->
+                            currentCondition = weatherCondition.weatherDescription
+                            temperature = weatherCondition.temperature
+                            windSpeed = weatherCondition.windSpeed
+                            windDirection = weatherCondition.windDirection
+                            iconUrl = weatherCondition.iconUrl
+                        },
+                        {Timber.e("Error")}
+                )
     }
 }
