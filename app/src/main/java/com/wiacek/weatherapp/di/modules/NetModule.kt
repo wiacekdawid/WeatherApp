@@ -2,14 +2,19 @@ package com.wiacek.weatherapp.di.modules
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.wiacek.weatherapp.BuildConfig
 import com.wiacek.weatherapp.di.scopes.ApplicationScope
 import com.wiacek.weatherapp.api.OpenWeatherMapService
 import dagger.Module
 import dagger.Provides
+import okhttp3.HttpUrl
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 
 /**
  * Created by wiacek.dawid@gmail.com
@@ -28,9 +33,37 @@ class NetModule {
 
     @Provides
     @ApplicationScope
-    fun provideOkHttpClient(): OkHttpClient {
-        val okHttpClient = OkHttpClient()
-        return okHttpClient
+    @Named("ApiKeyInterceptor")
+    fun provideApiKeyInterceptor(): Interceptor {
+        return Interceptor {
+            val original = it.request()
+            val originalHttpUrl = original.url()
+
+            val url = originalHttpUrl.newBuilder()
+                    .addQueryParameter("APPID", BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+                    .build()
+
+            // Request customization: add request headers
+            val requestBuilder = original.newBuilder()
+                    .url(url)
+
+            val request = requestBuilder.build()
+            it.proceed(request)
+        }
+    }
+
+    @Provides
+    @ApplicationScope
+    fun provideOkHttpClientBuilder(
+            @Named("ApiKeyInterceptor")interceptor: Interceptor): OkHttpClient.Builder {
+        return OkHttpClient.Builder().addInterceptor(interceptor)
+    }
+
+
+    @Provides
+    @ApplicationScope
+    fun provideOkHttpClient(okHttpClientBuilder: OkHttpClient.Builder): OkHttpClient {
+        return okHttpClientBuilder.build()
     }
 
     @Provides

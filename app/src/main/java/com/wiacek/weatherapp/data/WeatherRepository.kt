@@ -22,8 +22,7 @@ class WeatherRepository(val openWeatherMapService: OpenWeatherMapService) {
 
         return openWeatherMapService
                 .getWeatherConditionByLatLon(lat,
-                        lon,
-                        BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+                        lon)
                 .map {
                     WeatherConditionMapper.transformWeatherResponseDtoToWeatherCondition(it)
                 }

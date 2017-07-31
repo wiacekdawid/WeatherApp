@@ -12,6 +12,5 @@ import retrofit2.http.Query
 interface OpenWeatherMapService {
     @GET("data/2.5/weather")
     fun getWeatherConditionByLatLon(@Query("lat")lat: Double,
-                                    @Query("lon")lon: Double,
-                                    @Query("APPID")apiid: String): Single<WeatherResponseDto>
+                                    @Query("lon")lon: Double): Single<WeatherResponseDto>
 }
