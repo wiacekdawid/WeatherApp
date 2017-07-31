@@ -6,4 +6,8 @@
     <string name="temperature">Temperature:</string>
     <string name="wind_speed">Wind Speed:</string>
     <string name="wind_direction">Wind Direction:</string>
+    <string name="last_update">Last Update:</string>
+    <string name="no_previous_data">You are offline. No previous data available.</string>
+    <string name="offline_message">You need to connect to the internet in order to get updated data.</string>
+    <string name="error_message">Error message.</string>
 </resources>

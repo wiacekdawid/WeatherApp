@@ -2,24 +2,25 @@ package com.wiacek.weatherapp.ui.weather
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
-import com.wiacek.weatherapp.api.OpenWeatherMapService
 import com.wiacek.weatherapp.BR
-import com.wiacek.weatherapp.BuildConfig
-import com.wiacek.weatherapp.data.WeatherRepository
-import com.wiacek.weatherapp.data.model.WeatherConditionMapper
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import timber.log.Timber
 
 /**
  * Created by wiacek.dawid@gmail.com
  */
-class WeatherViewModel(var weatherRepository: WeatherRepository,
-                       currentCondition: String = "",
+class WeatherViewModel(currentCondition: String = "",
                        temperature: String = "",
                        windSpeed: String = "",
                        windDirection: String = "",
-                       iconUrl: String = "") : BaseObservable() {
+                       iconUrl: String = "",
+                       isLoadingVisible: Boolean = false,
+                       isFabButtonVisible: Boolean = false,
+                       isLastUpdateDateVisible: Boolean = false,
+                       isNoInternetInfoVisible: Boolean = false,
+                       isScreenNoDataVisible: Boolean = false,
+                       isDataVisible: Boolean = false,
+                       isOfflineMessageVisible: Boolean = false,
+                       lastUpdateDate: String = "",
+                       isErrorMessageVisible: Boolean = false) : BaseObservable() {
 
     @get:Bindable
     var currentCondition = currentCondition
@@ -56,21 +57,66 @@ class WeatherViewModel(var weatherRepository: WeatherRepository,
             notifyPropertyChanged(BR.iconUrl)
         }
 
-    fun refreshWeatherConditions() {
-        weatherRepository.getWeatherConditionByLatLon(49.975253, 19.124248)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter { it -> it != null }
-                .subscribe(
-                        {
-                            weatherCondition ->
-                            currentCondition = weatherCondition.weatherDescription
-                            temperature = weatherCondition.temperature
-                            windSpeed = weatherCondition.windSpeed
-                            windDirection = weatherCondition.windDirection
-                            iconUrl = weatherCondition.iconUrl
-                        },
-                        {Timber.e("Error")}
-                )
-    }
+    @get:Bindable
+    var isLoadingVisible = isLoadingVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.loadingVisible)
+        }
+
+    @get:Bindable
+    var isFabButtonVisible = isFabButtonVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.fabButtonVisible)
+        }
+
+    @get:Bindable
+    var isLastUpdateDateVisible = isLastUpdateDateVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.lastUpdateDateVisible)
+        }
+
+    @get:Bindable
+    var isNoInternetInfoVisible = isNoInternetInfoVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.noInternetInfoVisible)
+        }
+
+    @get:Bindable
+    var isScreenNoDataVisible = isScreenNoDataVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.screenNoDataVisible)
+        }
+
+    @get:Bindable
+    var isDataVisible = isDataVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.dataVisible)
+        }
+
+    @get:Bindable
+    var isOfflineMessageVisible = isOfflineMessageVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.offlineMessageVisible)
+        }
+
+    @get:Bindable
+    var lastUpdateDate = lastUpdateDate
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.lastUpdateDate)
+        }
+
+    @get:Bindable
+    var isErrorMessageVisible = isErrorMessageVisible
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.errorMessageVisible)
+        }
 }

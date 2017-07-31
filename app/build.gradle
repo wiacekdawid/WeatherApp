@@ -35,6 +35,7 @@ android {
 
 dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.ext.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.ext.supportLibraryVersion"
     compile "com.jakewharton.timber:timber:$rootProject.ext.timberVersion"
     compile "com.android.support:multidex:$rootProject.ext.multidexVersion"
     compile "com.google.dagger:dagger:$rootProject.ext.daggerVersion"

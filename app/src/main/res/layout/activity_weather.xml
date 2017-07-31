@@ -3,92 +3,141 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
+            name="viewHandler"
+            type="com.wiacek.weatherapp.ui.weather.WeatherViewHandler" />
+        <variable
             name="viewModel"
             type="com.wiacek.weatherapp.ui.weather.WeatherViewModel" />
     </data>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.dataVisible}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/current_condition"/>
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.currentCondition}"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:url="@{viewModel.iconUrl}"
+                    android:adjustViewBounds="true"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/temperature"/>
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.temperature}"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wind_speed"/>
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.windSpeed}"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/wind_direction"/>
+
+                <TextView
+                    style="@style/DefaultFontStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.windDirection}"/>
+
+            </LinearLayout>
 
             <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/current_condition"/>
-
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.currentCondition}"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:url="@{viewModel.iconUrl}"
-                android:adjustViewBounds="true"/>
+                android:visibility="@{viewModel.lastUpdateDateVisible}"
+                android:text="@{viewModel.lastUpdateDate}"/>
 
         </LinearLayout>
 
-        <LinearLayout
+        <TextView
+            style="@style/DefaultFontStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="@string/no_previous_data"
+            android:visibility="@{viewModel.screenNoDataVisible}"/>
 
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/temperature"/>
-
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.temperature}"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            style="@style/DefaultFontStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="@string/offline_message"
+            android:visibility="@{viewModel.offlineMessageVisible}"/>
 
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/wind_speed"/>
-
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.windSpeed}"/>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            style="@style/DefaultFontStyle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:text="@string/error_message"
+            android:visibility="@{viewModel.errorMessageVisible}"/>
 
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/wind_direction"/>
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.loadingVisible}"/>
 
-            <TextView
-                style="@style/DefaultFontStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.windDirection}"/>
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:onClick="@{(v) -> viewHandler.refreshManually()}"
+            android:visibility="@{viewModel.fabButtonVisible}"/>
 
-        </LinearLayout>
-
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

@@ -23,6 +23,8 @@ class WeatherActivity : AppCompatActivity() {
     lateinit var locationManager: LocationManager
     @Inject
     lateinit var weatherViewModel: WeatherViewModel
+    @Inject
+    lateinit var weatherViewHandler: WeatherViewHandler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var component = WeatherApplication.get(this).appComponent.add(WeatherActivityModule(this))
@@ -31,10 +33,11 @@ class WeatherActivity : AppCompatActivity() {
 
         var binding = DataBindingUtil.setContentView<ActivityWeatherBinding>(this, R.layout.activity_weather)
         binding.viewModel = weatherViewModel
+        binding.viewHandler = weatherViewHandler
     }
 
     override fun onResume() {
         super.onResume()
-        weatherViewModel.refreshWeatherConditions()
+        weatherViewHandler.refreshWeatherConditions()
     }
 }
