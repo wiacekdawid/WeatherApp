@@ -34,6 +34,8 @@ carefull not to put to much logic into the view.
 
 What to change?
 
+add mockito to unit tests
+
 activity_weather.xml - I just add all the neccesaries Views, it need some work to be better
 
 data layer - WeatherRepository - create interface to it and unit tests, think about one method
