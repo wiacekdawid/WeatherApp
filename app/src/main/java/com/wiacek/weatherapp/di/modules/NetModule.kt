@@ -33,7 +33,7 @@ class NetModule {
 
     @Provides
     @ApplicationScope
-    @Named("ApiKeyInterceptor")
+    @Named("OpenWeatherMapInterceptor")
     fun provideApiKeyInterceptor(): Interceptor {
         return Interceptor {
             val original = it.request()
@@ -41,6 +41,8 @@ class NetModule {
 
             val url = originalHttpUrl.newBuilder()
                     .addQueryParameter("APPID", BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+                    // by setting units = metric we get temperature in Celcius degrees
+                    .addQueryParameter("units", "metric")
                     .build()
 
             // Request customization: add request headers
@@ -55,7 +57,7 @@ class NetModule {
     @Provides
     @ApplicationScope
     fun provideOkHttpClientBuilder(
-            @Named("ApiKeyInterceptor")interceptor: Interceptor): OkHttpClient.Builder {
+            @Named("OpenWeatherMapInterceptor")interceptor: Interceptor): OkHttpClient.Builder {
         return OkHttpClient.Builder().addInterceptor(interceptor)
     }
 

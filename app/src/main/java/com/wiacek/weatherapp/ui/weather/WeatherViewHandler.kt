@@ -30,7 +30,7 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                             {
                                 weatherCondition ->
                                 weatherViewModel.currentCondition = weatherCondition.weatherDescription
-                                weatherViewModel.temperature = weatherCondition.temperature
+                                weatherViewModel.temperature = weatherCondition.temperature + " \u2103"
                                 weatherViewModel.windSpeed = weatherCondition.windSpeed
                                 weatherViewModel.windDirection = weatherCondition.windDirection
                                 weatherViewModel.iconUrl = weatherCondition.iconUrl
@@ -59,7 +59,7 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                                 weatherViewModel.lastUpdateDate = sdf.format(Date(it.createDate))
 
                                 weatherViewModel.currentCondition = it.weatherDescription
-                                weatherViewModel.temperature = it.temperature
+                                weatherViewModel.temperature = it.temperature + " \u2103"
                                 weatherViewModel.windSpeed = it.windSpeed
                                 weatherViewModel.windDirection = it.windDirection
                                 weatherViewModel.iconUrl = it.iconUrl
