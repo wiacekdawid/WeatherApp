@@ -1,12 +1,14 @@
 package com.wiacek.weatherapp.ui.weather
 
 import android.databinding.DataBindingUtil
+import android.location.LocationManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.wiacek.weatherapp.R
+import com.wiacek.weatherapp.WeatherApplication
+import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.databinding.ActivityWeatherBinding
-import com.wiacek.weatherapp.api.OpenWeatherMapService
-import com.wiacek.weatherapp.di.components.DaggerAppComponent
+import com.wiacek.weatherapp.di.modules.WeatherActivityModule
 import javax.inject.Inject
 
 /**
@@ -16,17 +18,16 @@ import javax.inject.Inject
 class WeatherActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var openWeatherMapService: OpenWeatherMapService
-
-    var weatherViewModel = WeatherViewModel()
+    lateinit var weatherRepository: WeatherRepository
+    @Inject
+    lateinit var locationManager: LocationManager
+    @Inject
+    lateinit var weatherViewModel: WeatherViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        var component = DaggerAppComponent.builder().build()
+        var component = WeatherApplication.get(this).appComponent.add(WeatherActivityModule(this))
         component.inject(this)
-
         super.onCreate(savedInstanceState)
-
-        weatherViewModel.openWeatherMapService = openWeatherMapService
 
         var binding = DataBindingUtil.setContentView<ActivityWeatherBinding>(this, R.layout.activity_weather)
         binding.viewModel = weatherViewModel

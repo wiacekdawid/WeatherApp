@@ -12,5 +12,9 @@ data class WeatherResponseDto(
         @SerializedName("main")
         var main: MainDto = MainDto(),
         @SerializedName("wind")
-        var wind: WindDto = WindDto()
+        var wind: WindDto = WindDto(),
+        @SerializedName("uuid")
+        var id: String = "",
+        @SerializedName("name")
+        var name: String = ""
 )

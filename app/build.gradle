@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -45,10 +46,13 @@ dependencies {
     compile "io.reactivex.rxjava2:rxandroid:$rootProject.ext.rxAndroidVersion"
     compile "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxJavaVersion"
     compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    compile "com.facebook.stetho:stetho:$rootProject.ext.stethoVersion"
+    compile "com.uphyca:stetho_realm:$rootProject.ext.stethoRealmVersion"
 
     kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
     kapt "com.android.databinding:compiler:$rootProject.ext.databindingVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
+    kapt "dk.ilios:realmfieldnameshelper:$rootProject.ext.realmFieldNamesHelperVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.ext.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.ext.leakcanaryVersion"

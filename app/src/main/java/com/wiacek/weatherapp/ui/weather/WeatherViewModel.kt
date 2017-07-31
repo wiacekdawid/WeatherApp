@@ -5,7 +5,8 @@ import android.databinding.Bindable
 import com.wiacek.weatherapp.api.OpenWeatherMapService
 import com.wiacek.weatherapp.BR
 import com.wiacek.weatherapp.BuildConfig
-import com.wiacek.weatherapp.data.WeatherConditionMapper
+import com.wiacek.weatherapp.data.WeatherRepository
+import com.wiacek.weatherapp.data.model.WeatherConditionMapper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -13,7 +14,7 @@ import timber.log.Timber
 /**
  * Created by wiacek.dawid@gmail.com
  */
-class WeatherViewModel(var openWeatherMapService: OpenWeatherMapService? = null,
+class WeatherViewModel(var weatherRepository: WeatherRepository,
                        currentCondition: String = "",
                        temperature: String = "",
                        windSpeed: String = "",
@@ -56,13 +57,11 @@ class WeatherViewModel(var openWeatherMapService: OpenWeatherMapService? = null,
         }
 
     fun refreshWeatherConditions() {
-        openWeatherMapService?.getWeatherConditionByLatLon(49.975253, 19.124248, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.map {
-                    WeatherConditionMapper.transformWeatherResponseDtoToWeatherCondition(it)
-                }
-                ?.subscribe(
+        weatherRepository.getWeatherConditionByLatLon(49.975253, 19.124248)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter { it -> it != null }
+                .subscribe(
                         {
                             weatherCondition ->
                             currentCondition = weatherCondition.weatherDescription

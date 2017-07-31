@@ -1,4 +1,4 @@
-package com.wiacek.weatherapp.data
+package com.wiacek.weatherapp.data.model
 
 import com.wiacek.weatherapp.api.model.WeatherResponseDto
 
@@ -8,7 +8,9 @@ import com.wiacek.weatherapp.api.model.WeatherResponseDto
 object WeatherConditionMapper {
     fun transformWeatherResponseDtoToWeatherCondition(weatherResponseDto: WeatherResponseDto)
             : WeatherCondition {
-        return WeatherCondition(weatherDescription = weatherResponseDto.weather[0].main,
+        return WeatherCondition(uuid = weatherResponseDto.id,
+                name = weatherResponseDto.name,
+                weatherDescription = weatherResponseDto.weather[0].main,
                 temperature = weatherResponseDto.main.temperature,
                 windSpeed = weatherResponseDto.wind.speed,
                 windDirection = weatherResponseDto.wind.direction,
