@@ -1,17 +1,23 @@
 package com.wiacek.weatherapp
 
+import android.location.Location
 import android.location.LocationManager
-import android.net.ConnectivityManager
-import com.nhaarman.mockito_kotlin.description
+import com.nhaarman.mockito_kotlin.times
+import com.nhaarman.mockito_kotlin.verify
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.data.model.WeatherCondition
 import com.wiacek.weatherapp.ui.weather.WeatherViewHandler
 import com.wiacek.weatherapp.ui.weather.WeatherViewModel
-import org.junit.Assert
+import com.wiacek.weatherapp.util.NetworkManager
+import io.reactivex.Maybe
+import io.reactivex.Single
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.junit.MockitoJUnit
 
 /**
  * Created by wiacek.dawid@gmail.com
@@ -19,182 +25,99 @@ import org.mockito.MockitoAnnotations
 
 class WeatherViewHandlerTest {
 
+    @Rule @JvmField
+    val rule = MockitoJUnit.rule()!!
+
+    @Rule @JvmField var testSchedulerRule = RxImmediateSchedulerRule()
+
     @Mock
     lateinit var weatherRepository: WeatherRepository
     @Mock
-    lateinit var connectivityManager: ConnectivityManager
+    lateinit var networkManager: NetworkManager
     @Mock
     lateinit var locationManager: LocationManager
+    @Mock
+    lateinit var weatherViewModel: WeatherViewModel
+    @Mock
+    lateinit var location: Location
 
     lateinit var weatherViewHandler: WeatherViewHandler
-
-    var weatherViewModel: WeatherViewModel = WeatherViewModel()
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
         weatherViewHandler = WeatherViewHandler(weatherViewModel = weatherViewModel,
-                                                weatherRepository = weatherRepository,
-                                                connectivityManager = connectivityManager,
-                                                locationManager = locationManager)
+                weatherRepository = weatherRepository,
+                networkManager = networkManager,
+                locationManager = locationManager)
     }
 
     @Test
-    fun shouldFillViewModelWithWeatherConditionData() {
+    fun shouldShowOfflineMessageWhenRefreshManually() {
         //given
-        val weatherCondition = WeatherCondition(weatherDescription = "weatherDescription",
-                                                temperature = "temperature",
-                                                windSpeed = "windSpeed",
-                                                windDirection = "windDirection",
-                                                iconUrl = "iconUrl")
+        Mockito.`when`(networkManager.isInternetOn()).thenReturn(false)
+
         //when
-        weatherViewHandler.fillViewModelData(weatherCondition)
+        weatherViewHandler.refreshManually()
 
         //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(currentCondition, "weatherDescription")
-            Assert.assertEquals(iconUrl, "iconUrl")
-            Assert.assertEquals(temperature, "temperature" + " \u2103")
-            Assert.assertEquals(windSpeed, "windSpeed")
-            Assert.assertEquals(windDirection, "windDirection")
-        }
+        verify(weatherViewModel, times(1)).showOfflineMessage()
+        verify(weatherViewModel, times(1)).disableAllViews()
     }
 
     @Test
-    fun shouldDisableAllViews() {
+    fun shouldGetWeatherConditionByLatLonRemoteWhenRefresh() {
         //given
+        Mockito.`when`(networkManager.isInternetOn()).thenReturn(true)
+        Mockito.`when`(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)).thenReturn(location)
+        Mockito.`when`(weatherRepository.getWeatherConditionByLatLonRemote(0.0, 0.0)).thenReturn(Single.just(WeatherCondition()))
 
         //when
-        weatherViewHandler.disableAllViews()
+        weatherViewHandler.refreshWeatherConditions()
 
         //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, false)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, false)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
+        verify(weatherRepository, times(1)).getWeatherConditionByLatLonRemote(0.0, 0.0)
     }
 
     @Test
-    fun shouldShowErrorMessageWithFabButton() {
+    fun shouldGetLatestWeatherConditionLocalWhenRefreshNoLocationNoInternet() {
         //given
+        Mockito.`when`(networkManager.isInternetOn()).thenReturn(false)
+        Mockito.`when`(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)).thenReturn(null)
+        Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when
-        weatherViewHandler.showErrorMessage()
+        weatherViewHandler.refreshWeatherConditions()
 
         //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isErrorMessageVisible, true)
-            Assert.assertEquals(isFabButtonVisible, true)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, false)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
+        verify(weatherRepository, times(1)).getLatestWeatherConditionLocal()
     }
 
     @Test
-    fun shouldShowLoadingIndicator() {
+    fun shouldGetLatestWeatherConditionLocalWhenRefreshNoLocation() {
         //given
+        Mockito.`when`(networkManager.isInternetOn()).thenReturn(true)
+        Mockito.`when`(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)).thenReturn(null)
+        Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when
-        weatherViewHandler.showLoadingIndicator()
+        weatherViewHandler.refreshWeatherConditions()
 
         //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isLoadingVisible, true)
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, false)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, false)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
+        verify(weatherRepository, times(1)).getLatestWeatherConditionLocal()
     }
 
     @Test
-    fun shouldHideLoadingIndicator() {
+    fun shouldGetLatestWeatherConditionLocalWhenRefreshNoInternet() {
         //given
+        Mockito.`when`(networkManager.isInternetOn()).thenReturn(false)
+        Mockito.`when`(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)).thenReturn(location)
+        Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when
-        weatherViewHandler.hideLoadingIndicator()
+        weatherViewHandler.refreshWeatherConditions()
 
         //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isLoadingVisible, false)
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, false)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, false)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
-    }
-
-    @Test
-    fun shouldShowOnlineData() {
-        //given
-
-        //when
-        weatherViewHandler.showOnlineData()
-
-        //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isLoadingVisible, false)
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, false)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, true)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
-    }
-
-    @Test
-    fun shouldShowNoOfflineData() {
-        //given
-
-        //when
-        weatherViewHandler.showNoOfflineData()
-
-        //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isLoadingVisible, false)
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, true)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, false)
-            Assert.assertEquals(isLastUpdateDateVisible, false)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, true)
-        }
-    }
-
-    @Test
-    fun shouldShowOfflineData() {
-        //given
-
-        //when
-        weatherViewHandler.showOfflineData()
-
-        //expect
-        with(weatherViewModel) {
-            Assert.assertEquals(isLoadingVisible, false)
-            Assert.assertEquals(isErrorMessageVisible, false)
-            Assert.assertEquals(isFabButtonVisible, true)
-            Assert.assertEquals(isOfflineMessageVisible, false)
-            Assert.assertEquals(isDataVisible, true)
-            Assert.assertEquals(isLastUpdateDateVisible, true)
-            Assert.assertEquals(isNoInternetInfoVisible, false)
-            Assert.assertEquals(isScreenNoDataVisible, false)
-        }
+        verify(weatherRepository, times(1)).getLatestWeatherConditionLocal()
     }
 }

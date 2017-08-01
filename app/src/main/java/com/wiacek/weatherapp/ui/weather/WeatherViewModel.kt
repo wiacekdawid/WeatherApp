@@ -3,6 +3,9 @@ package com.wiacek.weatherapp.ui.weather
 import android.databinding.BaseObservable
 import android.databinding.Bindable
 import com.wiacek.weatherapp.BR
+import com.wiacek.weatherapp.data.model.WeatherCondition
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by wiacek.dawid@gmail.com
@@ -119,4 +122,61 @@ class WeatherViewModel(currentCondition: String = "",
             field = value
             notifyPropertyChanged(BR.errorMessageVisible)
         }
+
+    fun showLoadingIndicator() {
+        isLoadingVisible = true
+    }
+
+    fun hideLoadingIndicator() {
+        isLoadingVisible = false
+    }
+
+    fun showOnlineData() {
+        isDataVisible = true
+    }
+
+    fun fillViewModelData(weatherCondition: WeatherCondition) {
+        currentCondition = weatherCondition.weatherDescription
+        temperature = weatherCondition.temperature + " \u2103"
+        windSpeed = weatherCondition.windSpeed
+        windDirection = weatherCondition.windDirection
+        iconUrl = weatherCondition.iconUrl
+    }
+
+    fun showErrorMessage() {
+        isErrorMessageVisible = true
+        isFabButtonVisible = true
+    }
+
+    fun disableAllViews() {
+        isFabButtonVisible = false
+        isLastUpdateDateVisible = false
+        isDataVisible = false
+        isNoInternetInfoVisible = false
+        isScreenNoDataVisible = false
+        isOfflineMessageVisible = false
+        isErrorMessageVisible = false
+    }
+
+    fun showNoOfflineData() {
+        isScreenNoDataVisible = true
+        isFabButtonVisible = true
+    }
+
+    fun showOfflineData() {
+        isDataVisible = true
+        isLastUpdateDateVisible = true
+        isFabButtonVisible = true
+    }
+
+    fun showOfflineDataLastUpdateDate(createDate: Long) {
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        lastUpdateDate = sdf.format(Date(createDate))
+    }
+
+    fun showOfflineMessage() {
+        isOfflineMessageVisible = true
+        isFabButtonVisible = true
+    }
 }

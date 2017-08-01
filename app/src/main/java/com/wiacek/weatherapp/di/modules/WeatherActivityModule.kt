@@ -1,13 +1,13 @@
 package com.wiacek.weatherapp.di.modules
 
 import android.location.LocationManager
-import android.net.ConnectivityManager
 import com.wiacek.weatherapp.api.OpenWeatherMapService
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.di.scopes.ActivityScope
 import com.wiacek.weatherapp.ui.weather.WeatherActivity
 import com.wiacek.weatherapp.ui.weather.WeatherViewHandler
 import com.wiacek.weatherapp.ui.weather.WeatherViewModel
+import com.wiacek.weatherapp.util.NetworkManager
 import dagger.Module
 import dagger.Provides
 
@@ -33,8 +33,8 @@ class WeatherActivityModule(val weatherActivity: WeatherActivity) {
     @ActivityScope
     fun provideWeatherViewHandler(weatherViewModel: WeatherViewModel,
                                   weatherRepository: WeatherRepository,
-                                  connectivityManager: ConnectivityManager,
+                                  networkManager: NetworkManager,
                                   locationManager: LocationManager): WeatherViewHandler {
-        return WeatherViewHandler(weatherViewModel, weatherRepository, connectivityManager, locationManager)
+        return WeatherViewHandler(weatherViewModel, weatherRepository, networkManager, locationManager)
     }
 }

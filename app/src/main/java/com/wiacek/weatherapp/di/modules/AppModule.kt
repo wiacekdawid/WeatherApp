@@ -5,6 +5,7 @@ import android.location.LocationManager
 import android.net.ConnectivityManager
 import com.wiacek.weatherapp.WeatherApplication
 import com.wiacek.weatherapp.di.scopes.ApplicationScope
+import com.wiacek.weatherapp.util.NetworkManager
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -27,6 +28,12 @@ class AppModule(var application: WeatherApplication) {
     @ApplicationScope
     fun provideConnectivityManager(@Named("ApplicationContext") context: Context): ConnectivityManager {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @Provides
+    @ApplicationScope
+    fun provideNetworkManager(connectivityManager: ConnectivityManager): NetworkManager {
+        return NetworkManager(connectivityManager)
     }
 
     @Provides
