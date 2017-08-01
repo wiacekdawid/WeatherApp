@@ -16,7 +16,10 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:padding="16dp"
+            android:background="@drawable/border"
             android:visibility="@{viewModel.dataVisible}">
 
             <LinearLayout
@@ -36,8 +39,9 @@
                     android:text="@{viewModel.currentCondition}"/>
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
                     android:url="@{viewModel.iconUrl}"
                     android:adjustViewBounds="true"/>
 
@@ -98,6 +102,7 @@
             </LinearLayout>
 
             <TextView
+                style="@style/DefaultFontStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="@{viewModel.lastUpdateDateVisible}"
@@ -106,21 +111,21 @@
         </LinearLayout>
 
         <TextView
-            style="@style/DefaultFontStyle"
+            style="@style/MessageFontStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/no_previous_data"
             android:visibility="@{viewModel.screenNoDataVisible}"/>
 
         <TextView
-            style="@style/DefaultFontStyle"
+            style="@style/MessageFontStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/offline_message"
             android:visibility="@{viewModel.offlineMessageVisible}"/>
 
         <TextView
-            style="@style/DefaultFontStyle"
+            style="@style/MessageFontStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/error_message"
