@@ -3,6 +3,7 @@ package com.wiacek.weatherapp.ui.weather
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import com.wiacek.weatherapp.data.WeatherRepository
+import com.wiacek.weatherapp.data.model.WeatherCondition
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -28,17 +29,13 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             {
-                                weatherCondition ->
-                                weatherViewModel.currentCondition = weatherCondition.weatherDescription
-                                weatherViewModel.temperature = weatherCondition.temperature + " \u2103"
-                                weatherViewModel.windSpeed = weatherCondition.windSpeed
-                                weatherViewModel.windDirection = weatherCondition.windDirection
-                                weatherViewModel.iconUrl = weatherCondition.iconUrl
-                                weatherViewModel.isDataVisible = true
+                                showOnlineData()
+                                fillViewModelData(weatherCondition = it)
                                 hideLoadingIndicator()
                             },
                             {
                                 showErrorMessage()
+                                hideLoadingIndicator()
                                 Timber.e(it)
                             }
                     )
@@ -49,32 +46,19 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             {
-                                weatherViewModel.isDataVisible = true
-                                weatherViewModel.isLastUpdateDateVisible = true
-
-                                //TODO move higher
-                                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                                sdf.timeZone = TimeZone.getTimeZone("UTC")
-                                weatherViewModel.isLastUpdateDateVisible = true
-                                weatherViewModel.lastUpdateDate = sdf.format(Date(it.createDate))
-
-                                weatherViewModel.currentCondition = it.weatherDescription
-                                weatherViewModel.temperature = it.temperature + " \u2103"
-                                weatherViewModel.windSpeed = it.windSpeed
-                                weatherViewModel.windDirection = it.windDirection
-                                weatherViewModel.iconUrl = it.iconUrl
-
-                                weatherViewModel.isFabButtonVisible = true
+                                showOfflineData()
+                                showOfflineDataLastUpdateDate(it.createDate)
+                                fillViewModelData(weatherCondition = it)
                                 hideLoadingIndicator()
                             },
                             {
                                 showErrorMessage()
+                                hideLoadingIndicator()
                                 Timber.e(it)
                             },
                             {
-                                weatherViewModel.isLoadingVisible = false
-                                weatherViewModel.isScreenNoDataVisible = true
-                                weatherViewModel.isFabButtonVisible = true
+                                showNoOfflineData()
+                                hideLoadingIndicator()
                             }
                     )
         }
@@ -100,14 +84,25 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
         weatherViewModel.isLoadingVisible = true
     }
 
-    fun showErrorMessage() {
-        weatherViewModel.isErrorMessageVisible = true
-        weatherViewModel.isFabButtonVisible = true
+    fun hideLoadingIndicator() {
         weatherViewModel.isLoadingVisible = false
     }
 
-    fun hideLoadingIndicator() {
-        weatherViewModel.isLoadingVisible = false
+    fun showOnlineData() {
+        weatherViewModel.isDataVisible = true
+    }
+
+    fun fillViewModelData(weatherCondition: WeatherCondition) {
+        weatherViewModel.currentCondition = weatherCondition.weatherDescription
+        weatherViewModel.temperature = weatherCondition.temperature + " \u2103"
+        weatherViewModel.windSpeed = weatherCondition.windSpeed
+        weatherViewModel.windDirection = weatherCondition.windDirection
+        weatherViewModel.iconUrl = weatherCondition.iconUrl
+    }
+
+    fun showErrorMessage() {
+        weatherViewModel.isErrorMessageVisible = true
+        weatherViewModel.isFabButtonVisible = true
     }
 
     fun disableAllViews() {
@@ -115,10 +110,25 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
         weatherViewModel.isLastUpdateDateVisible = false
         weatherViewModel.isDataVisible = false
         weatherViewModel.isNoInternetInfoVisible = false
-        weatherViewModel.isNoInternetInfoVisible = false
         weatherViewModel.isScreenNoDataVisible = false
         weatherViewModel.isOfflineMessageVisible = false
         weatherViewModel.isErrorMessageVisible = false
     }
 
+    fun showNoOfflineData() {
+        weatherViewModel.isScreenNoDataVisible = true
+        weatherViewModel.isFabButtonVisible = true
+    }
+
+    fun showOfflineData() {
+        weatherViewModel.isDataVisible = true
+        weatherViewModel.isLastUpdateDateVisible = true
+        weatherViewModel.isFabButtonVisible = true
+    }
+
+    fun showOfflineDataLastUpdateDate(createDate: Long) {
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        weatherViewModel.lastUpdateDate = sdf.format(Date(createDate))
+    }
 }

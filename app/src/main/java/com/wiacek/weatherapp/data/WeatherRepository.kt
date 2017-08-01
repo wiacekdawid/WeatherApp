@@ -1,9 +1,8 @@
 package com.wiacek.weatherapp.data
 
-import com.wiacek.weatherapp.BuildConfig
 import com.wiacek.weatherapp.api.OpenWeatherMapService
 import com.wiacek.weatherapp.data.model.WeatherCondition
-import com.wiacek.weatherapp.data.model.WeatherConditionHelper
+import com.wiacek.weatherapp.data.model.DbWeatherConditionHelper
 import com.wiacek.weatherapp.data.model.WeatherConditionMapper
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -27,13 +26,13 @@ class WeatherRepository(val openWeatherMapService: OpenWeatherMapService) {
                     WeatherConditionMapper.transformWeatherResponseDtoToWeatherCondition(it)
                 }
                 .doOnSuccess {
-                    it -> WeatherConditionHelper.add(Realm.getDefaultInstance(), it)
+                    it -> DbWeatherConditionHelper.add(Realm.getDefaultInstance(), it)
                         .subscribe({}, { Timber.e(it)})
                 }
     }
 
     fun getLatestWeatherConditionLocal(): Maybe<WeatherCondition> {
-        var weatherCondition = WeatherConditionHelper.getLatest(Realm.getDefaultInstance())
+        var weatherCondition = DbWeatherConditionHelper.getLatest(Realm.getDefaultInstance())
 
         if(weatherCondition == null || System.currentTimeMillis() - weatherCondition.createDate > ONE_HOUR_IN_MILISEC )
             return Maybe.empty()

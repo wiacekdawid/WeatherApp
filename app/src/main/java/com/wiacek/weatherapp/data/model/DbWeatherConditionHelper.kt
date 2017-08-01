@@ -7,7 +7,7 @@ import io.realm.Realm
  * Created by wiacek.dawid@gmail.com
  */
 
-object WeatherConditionHelper {
+object DbWeatherConditionHelper {
 
     fun add(realm: Realm, weatherCondition: WeatherCondition): Completable = Completable.fromAction {
         realm.executeTransaction { it -> it.insertOrUpdate(weatherCondition) }
