@@ -1,5 +1,7 @@
 package com.wiacek.weatherapp.ui.weather
 
+import android.Manifest
+import android.location.Location
 import android.location.LocationManager
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.util.NetworkManager
@@ -13,12 +15,17 @@ import timber.log.Timber
 class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                          val weatherRepository: WeatherRepository,
                          val networkManager: NetworkManager,
-                         val locationManager: LocationManager) {
+                         val locationManager: LocationManager) : PermissionManageResult {
+
+    var permisionManageRequest: PermissionManageRequest? = null
 
     fun refreshWeatherConditions() {
         weatherViewModel.disableAllViews()
         weatherViewModel.showLoadingIndicator()
-        val location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        var location: Location? = null
+        if(permisionManageRequest != null) {
+            location = getLocation()
+        }
 
         if(networkManager.isInternetOn() && location != null) {
             weatherRepository.getWeatherConditionByLatLonRemote(location.latitude, location.longitude)
@@ -61,6 +68,14 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
         }
     }
 
+    fun getLocation(): Location? {
+        if((permisionManageRequest as PermissionManageRequest).verifyPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        }
+        (permisionManageRequest as PermissionManageRequest).requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        return null
+    }
+
     fun refreshManually() {
         if(!networkManager.isInternetOn()) {
             weatherViewModel.disableAllViews()
@@ -69,5 +84,9 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
         else {
             refreshWeatherConditions()
         }
+    }
+
+    override fun permissionWasGranted() {
+        refreshWeatherConditions()
     }
 }

@@ -6,6 +6,8 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.data.model.WeatherCondition
+import com.wiacek.weatherapp.ui.weather.PermissionManageRequest
+import com.wiacek.weatherapp.ui.weather.WeatherActivity
 import com.wiacek.weatherapp.ui.weather.WeatherViewHandler
 import com.wiacek.weatherapp.ui.weather.WeatherViewModel
 import com.wiacek.weatherapp.util.NetworkManager
@@ -40,6 +42,10 @@ class WeatherViewHandlerTest {
     lateinit var weatherViewModel: WeatherViewModel
     @Mock
     lateinit var location: Location
+    @Mock
+    lateinit var permissionManageRequest: PermissionManageRequest
+    @Mock
+    lateinit var weatherActivity: WeatherActivity
 
     lateinit var weatherViewHandler: WeatherViewHandler
 

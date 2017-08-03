@@ -10,4 +10,8 @@
     <string name="no_previous_data">You are offline. No previous data available.</string>
     <string name="offline_message">You need to connect to the internet in order to get updated data.</string>
     <string name="error_message">Error message.</string>
+
+    <string name="permission_alert_dialog_title">Location permission needed</string>
+    <string name="permission_alert_dialog_message">Application need location permission. Please accept to see weather for your location.</string>
+    <string name="permission_alert_dialog_positive_button">Ok</string>
 </resources>
