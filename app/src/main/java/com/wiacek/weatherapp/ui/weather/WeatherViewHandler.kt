@@ -1,8 +1,6 @@
 package com.wiacek.weatherapp.ui.weather
 
-import android.Manifest
 import android.location.Location
-import android.location.LocationManager
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.util.NetworkManager
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,18 +12,14 @@ import timber.log.Timber
  */
 class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                          val weatherRepository: WeatherRepository,
-                         val networkManager: NetworkManager,
-                         val locationManager: LocationManager) : PermissionManageResult {
+                         val networkManager: NetworkManager) : LocationOnRequestResult {
 
-    var permisionManageRequest: PermissionManageRequest? = null
+    var locationRequester: LocationRequester? = null
 
     fun refreshWeatherConditions() {
         weatherViewModel.disableAllViews()
         weatherViewModel.showLoadingIndicator()
-        var location: Location? = null
-        if(permisionManageRequest != null) {
-            location = getLocation()
-        }
+        var location: Location? = locationRequester?.getLocation()
 
         if(networkManager.isInternetOn() && location != null) {
             weatherRepository.getWeatherConditionByLatLonRemote(location.latitude, location.longitude)
@@ -66,14 +60,6 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
                             }
                     )
         }
-    }
-
-    fun getLocation(): Location? {
-        if((permisionManageRequest as PermissionManageRequest).verifyPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-        }
-        (permisionManageRequest as PermissionManageRequest).requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-        return null
     }
 
     fun refreshManually() {

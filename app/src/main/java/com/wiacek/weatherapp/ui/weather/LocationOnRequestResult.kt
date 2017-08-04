@@ -3,6 +3,6 @@ package com.wiacek.weatherapp.ui.weather
 /**
  * Created by wiacek.dawid@gmail.com
  */
-interface PermissionManageResult {
+interface LocationOnRequestResult {
     fun permissionWasGranted()
 }

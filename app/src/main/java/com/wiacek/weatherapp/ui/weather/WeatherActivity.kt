@@ -1,8 +1,11 @@
 package com.wiacek.weatherapp.ui.weather
 
+import android.Manifest
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -19,11 +22,13 @@ import javax.inject.Inject
  * Created by wiacek.dawid@gmail.com
  */
 
-class WeatherActivity : AppCompatActivity(), PermissionManageRequest {
+class WeatherActivity : AppCompatActivity(), LocationRequester {
     @Inject
     lateinit var weatherViewModel: WeatherViewModel
     @Inject
     lateinit var weatherViewHandler: WeatherViewHandler
+    @Inject
+    lateinit var locationManager: LocationManager
 
     val PERMISSION_REQUEST_LOCATION = 999
 
@@ -32,7 +37,7 @@ class WeatherActivity : AppCompatActivity(), PermissionManageRequest {
         component.inject(this)
         super.onCreate(savedInstanceState)
 
-        weatherViewHandler.permisionManageRequest = this
+        weatherViewHandler.locationRequester = this
 
         var binding = DataBindingUtil.setContentView<ActivityWeatherBinding>(this, R.layout.activity_weather)
         binding.viewModel = weatherViewModel
@@ -44,22 +49,30 @@ class WeatherActivity : AppCompatActivity(), PermissionManageRequest {
         weatherViewHandler.refreshWeatherConditions()
     }
 
-    override fun verifyPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    override fun getLocation(): Location? {
+        if(verifyPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+        }
+        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        return null
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         when(requestCode) {
             PERMISSION_REQUEST_LOCATION -> {
                 if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    (weatherViewHandler as PermissionManageResult).permissionWasGranted()
+                    (weatherViewHandler as LocationOnRequestResult).permissionWasGranted()
                 }
             }
             else -> Timber.i("onRequestPermissionsResult was called with code: " + requestCode)
         }
     }
 
-    override fun requestPermission(permission: String) {
+    fun verifyPermission(permission: String): Boolean {
+        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+    }
+
+    fun requestPermission(permission: String) {
         if(ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
             AlertDialog.Builder(this)
                     .setTitle(resources.getString(R.string.permission_alert_dialog_title))
@@ -73,4 +86,5 @@ class WeatherActivity : AppCompatActivity(), PermissionManageRequest {
             ActivityCompat.requestPermissions(this, arrayOf(permission), PERMISSION_REQUEST_LOCATION)
         }
     }
+
 }

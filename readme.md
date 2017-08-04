@@ -27,6 +27,9 @@ to inspect memory leaks
 very fast database, good documentation, a lot of posibilities e.g. adapters to work with listView
 and recyclerView
 
+- Mockito
+use to mocking in unit tests
+
 Architecture
 I've used MVVM pattern with data binding library. I still learn this architecture but
 I really love it, I think it gives you much more posibilites than MVP although you have to be
@@ -34,16 +37,16 @@ carefull not to put to much logic into the view.
 
 What to change?
 
-add mockito to unit tests
+unit tests to rxjava flow (repository)
 
-activity_weather.xml - I just add all the neccesaries Views, it need some work to be better
+change permission verification in weather activity
 
-data layer - WeatherRepository - create interface to it and unit tests, think about one method
-instead of two combining local and remote data due to given conditions
+logic of date checking in local getting weather
 
-ui layer - WeatherViewHandler - create unit tests to it (check all conditions when we change
-the viewmodel)
+divide view actions from logic in handler
 
-api layer - add interceptor to api key, add celcius parameter to query degrees
+add extra state in view informing about no location
+
+add posibility to go to settings when there is no internet and location to change it
 
 
