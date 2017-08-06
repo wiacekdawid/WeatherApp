@@ -10,16 +10,15 @@ import timber.log.Timber
 /**
  * Created by wiacek.dawid@gmail.com
  */
-class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
+class WeatherViewHandler(val attachedWeatherActivity: AttachedWeatherActivity,
+                         val weatherViewModel: WeatherViewModel,
                          val weatherRepository: WeatherRepository,
-                         val networkManager: NetworkManager) : LocationOnRequestResult {
-
-    var locationRequester: LocationRequester? = null
+                         val networkManager: NetworkManager) {
 
     fun refreshWeatherConditions() {
         weatherViewModel.disableAllViews()
         weatherViewModel.showLoadingIndicator()
-        var location: Location? = locationRequester?.getLocation()
+        var location: Location? = attachedWeatherActivity.getLocation()
 
         if(networkManager.isInternetOn() && location != null) {
             weatherRepository.getWeatherConditionByLatLonRemote(location.latitude, location.longitude)
@@ -72,7 +71,7 @@ class WeatherViewHandler(val weatherViewModel: WeatherViewModel,
         }
     }
 
-    override fun permissionWasGranted() {
+    fun permissionWasGranted() {
         refreshWeatherConditions()
     }
 }

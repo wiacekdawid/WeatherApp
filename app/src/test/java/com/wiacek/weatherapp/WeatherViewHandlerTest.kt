@@ -5,8 +5,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import com.wiacek.weatherapp.data.WeatherRepository
 import com.wiacek.weatherapp.data.model.WeatherCondition
-import com.wiacek.weatherapp.ui.weather.LocationRequester
-import com.wiacek.weatherapp.ui.weather.WeatherActivity
+import com.wiacek.weatherapp.ui.weather.AttachedWeatherActivity
 import com.wiacek.weatherapp.ui.weather.WeatherViewHandler
 import com.wiacek.weatherapp.ui.weather.WeatherViewModel
 import com.wiacek.weatherapp.util.NetworkManager
@@ -40,19 +39,17 @@ class WeatherViewHandlerTest {
     @Mock
     lateinit var location: Location
     @Mock
-    lateinit var locationRequster: LocationRequester
-    @Mock
-    lateinit var weatherActivity: WeatherActivity
+    lateinit var attachedWeatherActivity: AttachedWeatherActivity
 
     lateinit var weatherViewHandler: WeatherViewHandler
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        weatherViewHandler = WeatherViewHandler(weatherViewModel = weatherViewModel,
+        weatherViewHandler = WeatherViewHandler(attachedWeatherActivity = attachedWeatherActivity,
+                weatherViewModel = weatherViewModel,
                 weatherRepository = weatherRepository,
                 networkManager = networkManager)
-        weatherViewHandler.locationRequester = locationRequster
     }
 
     @Test
@@ -72,7 +69,7 @@ class WeatherViewHandlerTest {
     fun shouldGetWeatherConditionByLatLonRemoteWhenRefresh() {
         //given
         Mockito.`when`(networkManager.isInternetOn()).thenReturn(true)
-        Mockito.`when`(locationRequster.getLocation()).thenReturn(location)
+        Mockito.`when`(attachedWeatherActivity.getLocation()).thenReturn(location)
         Mockito.`when`(weatherRepository.getWeatherConditionByLatLonRemote(0.0, 0.0)).thenReturn(Single.just(WeatherCondition()))
 
         //when
@@ -86,7 +83,7 @@ class WeatherViewHandlerTest {
     fun shouldGetLatestWeatherConditionLocalWhenRefreshNoLocationNoInternet() {
         //given
         Mockito.`when`(networkManager.isInternetOn()).thenReturn(false)
-        Mockito.`when`(locationRequster.getLocation()).thenReturn(null)
+        Mockito.`when`(attachedWeatherActivity.getLocation()).thenReturn(null)
         Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when
@@ -100,7 +97,7 @@ class WeatherViewHandlerTest {
     fun shouldGetLatestWeatherConditionLocalWhenRefreshNoLocation() {
         //given
         Mockito.`when`(networkManager.isInternetOn()).thenReturn(true)
-        Mockito.`when`(locationRequster.getLocation()).thenReturn(null)
+        Mockito.`when`(attachedWeatherActivity.getLocation()).thenReturn(null)
         Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when
@@ -114,7 +111,7 @@ class WeatherViewHandlerTest {
     fun shouldGetLatestWeatherConditionLocalWhenRefreshNoInternet() {
         //given
         Mockito.`when`(networkManager.isInternetOn()).thenReturn(false)
-        Mockito.`when`(locationRequster.getLocation()).thenReturn(location)
+        Mockito.`when`(attachedWeatherActivity.getLocation()).thenReturn(location)
         Mockito.`when`(weatherRepository.getLatestWeatherConditionLocal()).thenReturn(Maybe.empty())
 
         //when

@@ -5,6 +5,6 @@ import android.location.Location
 /**
  * Created by wiacek.dawid@gmail.com
  */
-interface LocationRequester {
+interface AttachedWeatherActivity {
     fun getLocation(): Location?
 }

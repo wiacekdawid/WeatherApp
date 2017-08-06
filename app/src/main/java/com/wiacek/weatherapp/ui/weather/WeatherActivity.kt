@@ -16,13 +16,14 @@ import com.wiacek.weatherapp.WeatherApplication
 import com.wiacek.weatherapp.databinding.ActivityWeatherBinding
 import com.wiacek.weatherapp.di.modules.WeatherActivityModule
 import timber.log.Timber
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 /**
  * Created by wiacek.dawid@gmail.com
  */
 
-class WeatherActivity : AppCompatActivity(), LocationRequester {
+class WeatherActivity : AppCompatActivity() {
     @Inject
     lateinit var weatherViewModel: WeatherViewModel
     @Inject
@@ -33,11 +34,9 @@ class WeatherActivity : AppCompatActivity(), LocationRequester {
     val PERMISSION_REQUEST_LOCATION = 999
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        var component = WeatherApplication.get(this).appComponent.add(WeatherActivityModule(this))
+        var component = WeatherApplication.get(this).appComponent.add(WeatherActivityModule(WeakReference(this)))
         component.inject(this)
         super.onCreate(savedInstanceState)
-
-        weatherViewHandler.locationRequester = this
 
         var binding = DataBindingUtil.setContentView<ActivityWeatherBinding>(this, R.layout.activity_weather)
         binding.viewModel = weatherViewModel
@@ -49,7 +48,7 @@ class WeatherActivity : AppCompatActivity(), LocationRequester {
         weatherViewHandler.refreshWeatherConditions()
     }
 
-    override fun getLocation(): Location? {
+    fun getLocation(): Location? {
         if(verifyPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         }
@@ -61,7 +60,7 @@ class WeatherActivity : AppCompatActivity(), LocationRequester {
         when(requestCode) {
             PERMISSION_REQUEST_LOCATION -> {
                 if(grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    (weatherViewHandler as LocationOnRequestResult).permissionWasGranted()
+                    weatherViewHandler.permissionWasGranted()
                 }
             }
             else -> Timber.i("onRequestPermissionsResult was called with code: " + requestCode)
