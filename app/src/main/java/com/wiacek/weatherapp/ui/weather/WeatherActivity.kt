@@ -61,7 +61,6 @@ class WeatherActivity : AppCompatActivity() {
 
     fun getLocation(): Location? {
         if(verifyPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            var loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
             return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         }
         requestPermission(Manifest.permission.ACCESS_FINE_LOCATION)
