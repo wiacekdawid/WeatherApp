@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Pogoda</string>
+    <string name="weather_activity_name">Pogoda</string>
+
+    <string name="current_condition">Aktualne warunki:</string>
+    <string name="temperature">Temperatura:</string>
+    <string name="wind_speed">Prędkość wiatru:</string>
+    <string name="wind_direction">Kierunek wiatru:</string>
+    <string name="last_update">Aktualizacja:</string>
+    <string name="no_previous_data">Znajdujesz sie w trybie offline lub lokalizacja nie została znaleziona. Brak danych lokalnych.</string>
+    <string name="error_message">Wystąpił błąd.</string>
+    <string name="no_location_message">Lokalizacja nie została znaleziona.</string>
+
+    <string name="permission_alert_dialog_title">Zgoda na pobranie lokalizacji.</string>
+    <string name="permission_alert_dialog_message">Aplikacja potrzebuje zgody na pobranie Twojej lokalizacji.</string>
+    <string name="permission_alert_dialog_positive_button">Ok</string>
+    <string name="permission_alert_dialog_negative_button">Anuluj</string>
+    <string name="permission_needed_when_never_ask_again_active">Aplikacja potrzebuje zgody na pobranie lokalizacji. Możesz ją ustawić w ustawieniach aplikacji.</string>
+</resources>

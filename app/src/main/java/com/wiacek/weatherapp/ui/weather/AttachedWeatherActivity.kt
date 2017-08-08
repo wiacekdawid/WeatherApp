@@ -7,4 +7,5 @@ import android.location.Location
  */
 interface AttachedWeatherActivity {
     fun getLocation(): Location?
+    fun showNoLocationToastMessage()
 }

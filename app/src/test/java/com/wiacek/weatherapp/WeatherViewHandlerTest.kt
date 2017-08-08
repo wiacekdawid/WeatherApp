@@ -3,7 +3,7 @@ package com.wiacek.weatherapp
 import android.location.Location
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
-import com.wiacek.weatherapp.data.WeatherRepository
+import com.wiacek.weatherapp.data.WeatherDataManager
 import com.wiacek.weatherapp.data.model.WeatherCondition
 import com.wiacek.weatherapp.ui.weather.AttachedWeatherActivity
 import com.wiacek.weatherapp.ui.weather.WeatherViewHandler
@@ -31,7 +31,7 @@ class WeatherViewHandlerTest {
     @Rule @JvmField var testSchedulerRule = RxImmediateSchedulerRule()
 
     @Mock
-    lateinit var weatherRepository: WeatherRepository
+    lateinit var weatherRepository: WeatherDataManager
     @Mock
     lateinit var networkManager: NetworkManager
     @Mock
@@ -48,7 +48,7 @@ class WeatherViewHandlerTest {
         MockitoAnnotations.initMocks(this)
         weatherViewHandler = WeatherViewHandler(attachedWeatherActivity = attachedWeatherActivity,
                 weatherViewModel = weatherViewModel,
-                weatherRepository = weatherRepository,
+                weatherDataManager = weatherRepository,
                 networkManager = networkManager)
     }
 

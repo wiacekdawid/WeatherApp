@@ -7,11 +7,14 @@
     <string name="wind_speed">Wind Speed:</string>
     <string name="wind_direction">Wind Direction:</string>
     <string name="last_update">Last Update:</string>
-    <string name="no_previous_data">You are offline. No previous data available.</string>
+    <string name="no_previous_data">You are offline or you don\'t have location. No previous data available.</string>
     <string name="offline_message">You need to connect to the internet in order to get updated data.</string>
     <string name="error_message">Error message.</string>
+    <string name="no_location_message">Location could not be found.</string>
 
     <string name="permission_alert_dialog_title">Location permission needed</string>
     <string name="permission_alert_dialog_message">Application need location permission. Please accept to see weather for your location.</string>
     <string name="permission_alert_dialog_positive_button">Ok</string>
+    <string name="permission_alert_dialog_negative_button">Cancel</string>
+    <string name="permission_needed_when_never_ask_again_active">Application need location permission. You need to accept this permission in your application settings.</string>
 </resources>

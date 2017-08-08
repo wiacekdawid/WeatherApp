@@ -2,6 +2,8 @@ package com.wiacek.weatherapp.ui.weather
 
 import android.databinding.BaseObservable
 import android.databinding.Bindable
+import android.os.Parcel
+import android.os.Parcelable
 import com.wiacek.weatherapp.BR
 import com.wiacek.weatherapp.data.model.WeatherCondition
 import java.text.SimpleDateFormat
@@ -23,8 +25,7 @@ class WeatherViewModel(currentCondition: String = "",
                        isDataVisible: Boolean = false,
                        isOfflineMessageVisible: Boolean = false,
                        lastUpdateDate: String = "",
-                       isErrorMessageVisible: Boolean = false) : BaseObservable() {
-
+                       isErrorMessageVisible: Boolean = false) : BaseObservable(), Parcelable {
     @get:Bindable
     var currentCondition = currentCondition
         set(value) {
@@ -124,59 +125,100 @@ class WeatherViewModel(currentCondition: String = "",
         }
 
     fun showLoadingIndicator() {
-        isLoadingVisible = true
+            isLoadingVisible = true
     }
 
     fun hideLoadingIndicator() {
-        isLoadingVisible = false
+            isLoadingVisible = false
     }
 
     fun showOnlineData() {
-        isDataVisible = true
+            isDataVisible = true
     }
 
     fun fillViewModelData(weatherCondition: WeatherCondition) {
-        currentCondition = weatherCondition.weatherDescription
-        temperature = weatherCondition.temperature + " \u2103"
-        windSpeed = weatherCondition.windSpeed
-        windDirection = weatherCondition.windDirection
-        iconUrl = weatherCondition.iconUrl
+            currentCondition = weatherCondition.weatherDescription
+            temperature = weatherCondition.temperature + " \u2103"
+            windSpeed = weatherCondition.windSpeed
+            windDirection = weatherCondition.windDirection
+            iconUrl = weatherCondition.iconUrl
     }
 
     fun showErrorMessage() {
-        isErrorMessageVisible = true
-        isFabButtonVisible = true
+            isErrorMessageVisible = true
+            isFabButtonVisible = true
     }
 
     fun disableAllViews() {
-        isFabButtonVisible = false
-        isLastUpdateDateVisible = false
-        isDataVisible = false
-        isNoInternetInfoVisible = false
-        isScreenNoDataVisible = false
-        isOfflineMessageVisible = false
-        isErrorMessageVisible = false
+            isFabButtonVisible = false
+            isLastUpdateDateVisible = false
+            isDataVisible = false
+            isNoInternetInfoVisible = false
+            isScreenNoDataVisible = false
+            isOfflineMessageVisible = false
+            isErrorMessageVisible = false
     }
 
     fun showNoOfflineData() {
-        isScreenNoDataVisible = true
-        isFabButtonVisible = true
+            isScreenNoDataVisible = true
+            isFabButtonVisible = true
     }
 
     fun showOfflineData() {
-        isDataVisible = true
-        isLastUpdateDateVisible = true
-        isFabButtonVisible = true
+            isDataVisible = true
+            isLastUpdateDateVisible = true
+            isFabButtonVisible = true
     }
 
     fun showOfflineDataLastUpdateDate(createDate: Long) {
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        lastUpdateDate = sdf.format(Date(createDate))
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("UTC")
+            lastUpdateDate = sdf.format(Date(createDate))
     }
 
     fun showOfflineMessage() {
-        isOfflineMessageVisible = true
-        isFabButtonVisible = true
+            isOfflineMessageVisible = true
+            isFabButtonVisible = true
+    }
+
+    companion object {
+        @JvmField val CREATOR: Parcelable.Creator<WeatherViewModel> = object : Parcelable.Creator<WeatherViewModel> {
+            override fun createFromParcel(source: Parcel): WeatherViewModel = WeatherViewModel(source)
+            override fun newArray(size: Int): Array<WeatherViewModel?> =arrayOfNulls(size)}
+    }
+
+    constructor(source: Parcel) : this(
+        source.readString(),
+        source.readString(),
+        source.readString(),
+        source.readString(),
+        source.readString(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        1 == source.readInt(),
+        source.readString(),
+        1 == source.readInt()
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) {dest.writeString(currentCondition)
+        dest.writeString(temperature)
+        dest.writeString(windSpeed)
+        dest.writeString(windDirection)
+        dest.writeString(iconUrl)
+        dest.writeInt((if(isLoadingVisible) 1 else 0))
+        dest.writeInt((if(isFabButtonVisible) 1 else 0))
+        dest.writeInt((if(isLastUpdateDateVisible) 1 else 0))
+        dest.writeInt((if(isNoInternetInfoVisible) 1 else 0))
+        dest.writeInt((if(isScreenNoDataVisible) 1 else 0))
+        dest.writeInt((if(isDataVisible) 1 else 0))
+        dest.writeInt((if(isOfflineMessageVisible) 1 else 0))
+        dest.writeString(lastUpdateDate)
+        dest.writeInt((if(isErrorMessageVisible) 1 else 0))
     }
 }

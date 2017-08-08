@@ -13,7 +13,7 @@ import timber.log.Timber
  * Created by wiacek.dawid@gmail.com
  */
 
-class WeatherRepository(val openWeatherMapService: OpenWeatherMapService) {
+class WeatherDataManager(val openWeatherMapService: OpenWeatherMapService) {
 
     private val ONE_HOUR_IN_MILISEC = 1000 * 60 * 60 * 24
 

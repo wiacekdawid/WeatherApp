@@ -1,7 +1,7 @@
 package com.wiacek.weatherapp.di.modules
 
 import com.wiacek.weatherapp.api.OpenWeatherMapService
-import com.wiacek.weatherapp.data.WeatherRepository
+import com.wiacek.weatherapp.data.WeatherDataManager
 import com.wiacek.weatherapp.di.scopes.ActivityScope
 import com.wiacek.weatherapp.ui.weather.*
 import com.wiacek.weatherapp.util.NetworkManager
@@ -17,8 +17,8 @@ import java.lang.ref.WeakReference
 class WeatherActivityModule(val weatherActivity: WeakReference<WeatherActivity>) {
     @Provides
     @ActivityScope
-    fun provideWeatherRepository(openWeatherMapService: OpenWeatherMapService): WeatherRepository {
-        return WeatherRepository(openWeatherMapService)
+    fun provideWeatherDataManager(openWeatherMapService: OpenWeatherMapService): WeatherDataManager {
+        return WeatherDataManager(openWeatherMapService)
     }
 
     @Provides
@@ -37,7 +37,7 @@ class WeatherActivityModule(val weatherActivity: WeakReference<WeatherActivity>)
     @ActivityScope
     fun provideWeatherViewHandler(attachedWeatherActivity: AttachedWeatherActivity,
                                   weatherViewModel: WeatherViewModel,
-                                  weatherRepository: WeatherRepository,
+                                  weatherRepository: WeatherDataManager,
                                   networkManager: NetworkManager): WeatherViewHandler {
         return WeatherViewHandler(attachedWeatherActivity, weatherViewModel, weatherRepository, networkManager)
     }
